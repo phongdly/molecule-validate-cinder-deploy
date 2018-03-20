@@ -22,9 +22,16 @@ def test_find_openrc_on_opt(host):
 def test_find_openrc_on_etc(host):
     assert host.file("/etc/openrc").exists
 
+
 # Experimental test
-def test_find_cinder_client(host):
+def test_cinder_service(host):
+
+    # fail test immediately if no cinder client on the host
     assert host.exists("cinder")
+    if host.file('/root/openrc').exists:
+        cmd = "sudo bash -c \"source /root/openrc; cinder service-list\""
+        output = host.run(cmd)
+        assert ("cinder-volume" in output.stdout)
 
 
 # Experimental test
